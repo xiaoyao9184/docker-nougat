@@ -1,0 +1,113 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "docker: compose up@cpu-online",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/docker/up@cpu-online/"
+            },
+            "command": "docker compose -p nougat up",
+        },
+        {
+            "label": "docker: build main",
+            "type": "shell",
+            "command": "docker build -t xiaoyao9184/nougat:main -f ./docker/build@source/dockerfile .",
+        },
+        {
+            "label": "docker: build 0.1.17",
+            "type": "shell",
+            "command": "docker build -t xiaoyao9184/nougat:0.1.17 -f ./docker/build@pypi/dockerfile .",
+        },
+        // not same model
+        // {
+        //     "label": "huggingface-cli: download models",
+        //     "type": "shell",
+        //     "options": {
+        //         "cwd": "${workspaceFolder}",
+        //         "env": {
+        //             // "HF_ENDPOINT": "https://hf-mirror.com",
+        //             // "HF_HUB_ETAG_TIMEOUT": "1000",
+        //             // "HF_HUB_DOWNLOAD_TIMEOUT": "1000"
+        //         },
+        //     },
+        //     "command": [
+        //         "huggingface-cli download facebook/nougat-small --revision main --cache-dir ./cache/huggingface/hub",
+        //         "&& huggingface-cli download facebook/nougat-base --revision main --cache-dir ./cache/huggingface/hub"
+        //     ]
+        // },
+        {
+            "label": "conda: run nougat 2304.03442",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "NLTK_DATA": "${workspaceFolder}/cache/nltk_data",
+                    "TORCH_HOME": "${workspaceFolder}/cache/torch",
+                },
+            },
+            "command": [
+                "conda run --no-capture-output -n nougat nougat",
+                "${workspaceFolder}/pdfs/2304.03442.pdf",
+                "-o",
+                "output_directory",
+                "-m",
+                "0.1.0-small"
+            ]
+        },
+        {
+            "label": "curl: download pdf 2304.03442",
+            "type": "shell",
+            "command": [
+                "curl", "-L",
+                "-o", "${workspaceFolder}/pdfs/2304.03442.pdf", 
+                "https://arxiv.org/pdf/2304.03442.pdf"
+            ]
+        },
+        {
+            "label": "curl: post nougat_api 2304.03442",
+            "type": "shell",
+            "command": [
+                "curl", "-L",
+                "https://arxiv.org/pdf/2304.03442.pdf",
+                "|",
+                "curl", "-v", "-X", "POST",
+                "-H", "'accept: application/json'",
+                "-H", "'Content-Type: multipart/form-data'",
+                "-F", "'file=@-;filename=2304.03442.pdf'",
+                "http://127.0.0.1:8503/predict/"
+            ]
+        },
+        {
+            "label": "conda: run nougat_api",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/nougat",
+                "env": {
+                    "NLTK_DATA": "${workspaceFolder}/cache/nltk_data",
+                    "TORCH_HOME": "${workspaceFolder}/cache/torch",
+                },
+            },
+            "command": [
+                "conda run --no-capture-output -n nougat pip install -e .[api]",
+                "&& conda run --no-capture-output -n nougat nougat_api"
+            ]
+        },
+        {
+            "label": "conda: nltk download",
+            "type": "shell",
+            "command": [
+                "conda run --no-capture-output -n nougat python -m nltk.downloader -d ${workspaceFolder}/cache/nltk_data words"
+            ]
+        },
+        {
+            "label": "conda: create env",
+            "type": "shell",
+            "command": [
+                "conda env create -f ./environment.yml"
+            ]
+        }
+    ]
+}
