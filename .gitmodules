@@ -1,0 +1,3 @@
+[submodule "nougat"]
+	path = nougat
+	url = https://github.com/facebookresearch/nougat.git
