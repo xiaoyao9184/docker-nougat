@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "debugpy: predict online",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/nougat/predict.py",
+            "console": "integratedTerminal",
+            "args": [
+                "${workspaceFolder}/pdfs/2304.03442.pdf",
+                // "--no-skipping",
+                "-o",
+                "output_directory",
+                "-m",
+                "0.1.0-small"
+            ],
+            "env": {
+                "NLTK_DATA": "${workspaceFolder}/cache/nltk_data",
+                "TORCH_HOME": "${workspaceFolder}/cache/torch",
+                // "NOUGAT_CHECKPOINT": "/root/.cache/torch/hub/nougat-0.1.0-small"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "debugpy: app online",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/nougat/app.py",
+            "console": "integratedTerminal",
+            "env": {
+                "NLTK_DATA": "${workspaceFolder}/cache/nltk_data",
+                "TORCH_HOME": "${workspaceFolder}/cache/torch",
+                // "NOUGAT_CHECKPOINT": "/root/.cache/torch/hub/nougat-0.1.0-small"
+            },
+            "justMyCode": false
+        }
+    ]
+}
