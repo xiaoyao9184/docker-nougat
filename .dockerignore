@@ -1,0 +1,10 @@
+nougat/.git/
+nougat/.github/
+nougat/config/
+nougat/docker/
+nougat/*.egg-info/
+nougat/.gitignore
+# Ignore generated files
+**/*.pyc
+
+output_directory/

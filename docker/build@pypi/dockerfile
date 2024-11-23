@@ -1,0 +1,29 @@
+ARG NOUGAT_VERSION=0.1.17
+
+
+FROM pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime
+
+ARG NOUGAT_VERSION
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    libgl1-mesa-glx \
+    libsm6 \
+    libxext6 \
+    libglib2.0-0 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --upgrade pip
+
+RUN pip3 install --no-cache-dir transformers==4.25.1 fsspec[http]==2023.1.0
+RUN pip3 install --no-cache-dir nougat-ocr==${NOUGAT_VERSION} fastapi uvicorn[standard] python-multipart
+RUN python -m nltk.downloader words
+
+EXPOSE 8503
+
+VOLUME /root/.cache
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8503"]
