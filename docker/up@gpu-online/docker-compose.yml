@@ -1,0 +1,20 @@
+
+
+services:
+  nougat_app:
+    image: xiaoyao9184/nougat:main
+    container_name: nougat_ocr_app
+    environment:
+      - TORCH_DEVICE=cuda
+    ports:
+      - "8503:8503"
+    volumes:
+      - ./../../cache:/root/.cache
+      - ./../../cache/nltk_data:/root/nltk_data
+      - ./../../pdfs:/app/pdfs
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
