@@ -69,7 +69,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/nougat
           tags: |
             type=raw,value=${{ matrix.NOUGAT_VERSION }}
-            type=raw,value=lastet
+            type=raw,value=latest
           flavor: |
             latest=false
 
